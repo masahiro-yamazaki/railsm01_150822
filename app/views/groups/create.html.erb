@@ -1,0 +1,45 @@
+<h1>Listing groups and members</h1>
+
+<%= form_tag(:controller=>'groups', :action=>'create') do %>
+名前(カナ)<%= text_field_tag :name_kana, params[:name_kana] %>
+<br>
+グループ
+<select name = "group_name">
+  <option value = ""></option>
+  <% Group.all.each |group| do %>
+    <option value = "#{group.name}">group.name</option>
+  <% end %>
+</select>
+<%= submit_tag "検索" %>
+<% end %>
+
+<br>
+<table class="table">
+  <thead>
+    <tr>
+      <th>名前(漢字)</th>
+      <th>名前(カナ)</th>
+      <th>メールアドレス</th>
+      <th>拠点</th>
+      <th>グループ</th>
+      <th>入社年月日</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @groups.each |group| do %>
+      <% members = group.members %>
+      <% members = members.where("name_kana like '%"+params[:name_kana]+"%'") if params[:name_kana].present? %>
+      <% members.each do |member| %>
+      <tr>
+        <td><%= member.name %></td>
+        <td><%= member.name_kana %></td>
+        <td><%= member.mail_address %></td>
+        <td><%= member.area %></td>
+        <td><%= group.name %></td>
+        <td><%= member.join_date %></td>
+      </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
